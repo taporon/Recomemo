@@ -44,7 +44,7 @@ class _PostCreateState extends State<PostCreate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('memo'),
+        title: const Text('New Memo'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.check),

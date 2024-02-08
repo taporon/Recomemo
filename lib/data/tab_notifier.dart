@@ -11,6 +11,11 @@ class TabsState {
   TabsState({required this.tabs, required this.tabViews});
 }
 
+final tabsProvider = StateNotifierProvider<TabsNotifier, TabsState>((ref) {
+  return TabsNotifier();
+});
+
+
 class TabsNotifier extends StateNotifier<TabsState> {
 
   final List<List<BlogPost>> postsLists = [
@@ -29,6 +34,30 @@ class TabsNotifier extends StateNotifier<TabsState> {
     tabViews: [])) {
     _initializeTabViews();
     }
+  void removePostFromTab(int tabIndex, BlogPost post) {
+    // 特定のタブのリストから投稿を削除
+    postsLists[tabIndex].removeWhere((item) => item.id == post.id);
+    // UIをリフレッシュ
+    _refreshTabViews();
+  }
+
+  void updatePostInTab(int tabIndex, BlogPost updatedPost) {
+    var posts = postsLists[tabIndex];
+    var index = posts.indexWhere((post) => post.id == updatedPost.id);
+    if (index != -1) {
+      posts[index] = updatedPost;
+      // UIをリフレッシュ
+      _refreshTabViews();
+    }
+  }
+
+  void _refreshTabViews() {
+    List<Widget> updatedTabViews = [];
+    for (int i = 0; i < postsLists.length; i++) {
+      updatedTabViews.add(_buildListView(i));
+    }
+    state = TabsState(tabs: List.from(state.tabs), tabViews: updatedTabViews);
+  }
 
   void _initializeTabViews() {
     List<Widget> initialTabViews = [];
@@ -85,9 +114,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
                     builder: (context) => PostDetails(post: post, tabIndex: tabIndex),
                   )
               );
-            },
-
-          ),
+             },
+            ),
           );
         },
       );
@@ -103,21 +131,31 @@ class TabsNotifier extends StateNotifier<TabsState> {
     );
   }
 
-  void updatePostInTab(int tabIndex, BlogPost updatedPost) {
-    var posts = postsLists[tabIndex];
-    var index = posts.indexWhere((post) => post.id == updatedPost.id);
-    if (index != -1) {
-      posts[index] = updatedPost;
-      state = TabsState(
-        tabs: List.from(state.tabs),
-        tabViews: [
-          for (int i = 0; i < state.tabs.length; i++) _buildListView(i),
-        ],
+  // TabsNotifier内
+  // TabsNotifierクラス内
+
+  void addTab(BuildContext context) {
+    if (postsLists.length >= 15) {
+      // 15章以上の場合はSnackBarを表示して追加を拒否
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('章は最大15までです。これ以上は追加できません。')),
       );
+    } else {
+      // 新しい章（タブ）を追加
+      postsLists.add([]); // 新しい章の投稿リストを追加
+      var newTabs = List<Tab>.from(state.tabs)
+        ..add(Tab(text: '第${postsLists.length}章'));
+      var newTabViews = List<Widget>.from(state.tabViews)
+        ..add(_buildListView(postsLists.length - 1));
+      state = TabsState(tabs: newTabs, tabViews: newTabViews);
     }
   }
-}
 
-final tabsProvider = StateNotifierProvider<TabsNotifier, TabsState>((ref) {
-  return TabsNotifier();
-});
+  void removeTab(int tabIndex) {
+    postsLists.removeAt(tabIndex); // 指定された章の投稿リストを削除
+    var newTabs = List<Tab>.from(state.tabs)..removeAt(tabIndex);
+    var newTabViews = List<Widget>.from(state.tabViews)..removeAt(tabIndex);
+    state = TabsState(tabs: newTabs, tabViews: newTabViews);
+  }
+
+}

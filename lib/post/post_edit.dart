@@ -61,7 +61,7 @@ class _EditPostPageState extends State<EditPostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Post'),
+        title: const Text('Edit Memo'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.save),
@@ -75,28 +75,55 @@ class _EditPostPageState extends State<EditPostPage> {
           padding: EdgeInsets.all(16),
           child: Column(
             children: [
-              TextFormField(
-                initialValue: _title,
-                decoration: InputDecoration(labelText: 'Title'),
-                onSaved: (value) => _title = value ?? '',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'タイトルは必須入力です';
-                  }
-                  return null;
-                },
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  initialValue: _title,
+                  decoration: InputDecoration(
+                      labelText: 'Title',
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      border: InputBorder.none,
+                      labelStyle: TextStyle(
+                        fontSize: 16,
+                      )
+                  ),
+                  onSaved: (value) => _title = value ?? '',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'タイトルは必須入力です';
+                    }
+                    return null;
+                  },
+                ),
               ),
-              TextFormField(
-                initialValue: _url,
-                decoration: InputDecoration(labelText: 'URL'),
-                onSaved: (value) => _url = value ?? '',
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  initialValue: _url,
+                  decoration: InputDecoration(
+                    labelText: 'URL',
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    labelStyle: TextStyle(
+                        fontSize: 16),
+                    border: InputBorder.none,
+                  ),
+                  onSaved: (value) => _url = value ?? '',
+                ),
               ),
-              TextFormField(
-                initialValue: _description,
-                maxLines: 10,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(labelText: 'Description'),
-                onSaved: (value) => _description = value ?? '',
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  initialValue: _description,
+                  maxLines: 10,
+                  keyboardType: TextInputType.multiline,
+                  decoration: InputDecoration(
+                      labelText: 'Description',
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    labelStyle: TextStyle(
+                        fontSize: 16),
+                    border: InputBorder.none,),
+                  onSaved: (value) => _description = value ?? '',
+                ),
               ),
             ],
           ),

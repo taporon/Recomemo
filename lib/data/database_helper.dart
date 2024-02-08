@@ -3,9 +3,11 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
+import 'package:study_record_app/post/post.dart';
+
 class DatabaseHelper {
   static final _databaseName = "MyDatabase.db";
-  static final _databaseVersion = 11;
+  static final _databaseVersion = 12;
   static final table = 'my_table';
   static final columnId = 'id';
   static final columnTitle = 'title';
@@ -42,7 +44,7 @@ class DatabaseHelper {
       $columnTitle TEXT NOT NULL,
       $columnDescription TEXT NOT NULL,
       $columnUrl TEXT NOT NULL,
-      $columnDate TEXT NOT NULL //最後はカンマいらない
+      $columnDate TEXT NOT NULL
     )
   ''');
   }
@@ -70,5 +72,21 @@ class DatabaseHelper {
   Future<int> delete(int id) async {
     Database db = await instance.database;
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
+  }
+
+  // DatabaseHelperクラス内に追加
+  Future<List<BlogPost>> getAllPosts() async {
+    Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(table);
+
+    return List.generate(maps.length, (i) {
+      return BlogPost(
+        id: maps[i]['id'],
+        title: maps[i]['title'],
+        description: maps[i]['description'],
+        url: maps[i]['url'],
+        creationDate: DateTime.parse(maps[i]['creationDate']),
+      );
+    });
   }
 }
