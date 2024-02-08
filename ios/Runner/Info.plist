@@ -4,6 +4,12 @@
 <dict>
 <key>FLTEnableImpeller</key>
 <false />
+<key>NSPhotoLibraryUsageDescription</key>
+<string>このアプリは、フォトライブラリから画像を選択する機能を提供します。</string>
+<key>NSCameraUsageDescription</key>
+<string>このアプリは、ユーザーが画像を撮影するためにカメラの使用を許可する必要があります。</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>このアプリは、ビデオ撮影時にマイクの使用を許可する必要があります。</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:study_record_app/data/tab_notifier.dart';
@@ -114,6 +116,9 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
             ),
             SizedBox(height: 16),
             Text(currentPost.description),
+            SizedBox(height: 16),
+            if (currentPost.imagePath.isNotEmpty)
+              Image.file(File(currentPost.imagePath)),
           ],
         ),
       ),

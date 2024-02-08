@@ -4,6 +4,7 @@ class BlogPost {
   final String title;
   final String description;
   final String url;
+  final String imagePath;
   final DateTime creationDate;
 
   BlogPost({
@@ -11,6 +12,7 @@ class BlogPost {
     required this.title,
     required this.description,
     required this.url,
+    required this.imagePath,
     required this.creationDate,
     });
 
@@ -19,6 +21,7 @@ class BlogPost {
       'id': id,
       'title': title,
       'url': url,
+      'imagePath': imagePath,
       'description': description,
       'creationDate': creationDate.toIso8601String(),
     };

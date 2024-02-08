@@ -130,10 +130,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       ],
     );
   }
-
-  // TabsNotifier内
-  // TabsNotifierクラス内
-
+  //以下、tab追加ロジック
   void addTab(BuildContext context) {
     if (postsLists.length >= 15) {
       // 15章以上の場合はSnackBarを表示して追加を拒否
@@ -150,7 +147,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       state = TabsState(tabs: newTabs, tabViews: newTabViews);
     }
   }
-
+  //以下、tab削除ロジック(いつか実装）
   void removeTab(int tabIndex) {
     postsLists.removeAt(tabIndex); // 指定された章の投稿リストを削除
     var newTabs = List<Tab>.from(state.tabs)..removeAt(tabIndex);

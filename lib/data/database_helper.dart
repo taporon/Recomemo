@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -7,7 +8,7 @@ import 'package:study_record_app/post/post.dart';
 
 class DatabaseHelper {
   static final _databaseName = "MyDatabase.db";
-  static final _databaseVersion = 12;
+  static final _databaseVersion = 14;
   static final table = 'my_table';
   static final columnId = 'id';
   static final columnTitle = 'title';
@@ -44,7 +45,8 @@ class DatabaseHelper {
       $columnTitle TEXT NOT NULL,
       $columnDescription TEXT NOT NULL,
       $columnUrl TEXT NOT NULL,
-      $columnDate TEXT NOT NULL
+      $columnDate TEXT NOT NULL,
+      imagePath TEXT 
     )
   ''');
   }
@@ -85,8 +87,19 @@ class DatabaseHelper {
         title: maps[i]['title'],
         description: maps[i]['description'],
         url: maps[i]['url'],
+        imagePath: maps[i]['imagePath'],
         creationDate: DateTime.parse(maps[i]['creationDate']),
       );
     });
+  }
+
+  Future<String> saveImageLocally(XFile image) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    final fileName = basename(image.path);
+    final File localImage = File('$path/$fileName');
+    await localImage.writeAsBytes(await image.readAsBytes());
+
+    return localImage.path;
   }
 }

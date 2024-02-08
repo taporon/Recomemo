@@ -35,6 +35,7 @@ class _EditPostPageState extends State<EditPostPage> {
         id: widget.post.id, // 既存のポストIDを保持
         title: _title,
         url: _url,
+        imagePath: widget.post.imagePath, // 既存の画像パスを保持
         description: _description,
         creationDate: widget.post.creationDate, // 既存の作成日を保持
       );
