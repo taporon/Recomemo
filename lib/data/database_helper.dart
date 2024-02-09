@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -8,7 +10,7 @@ import 'package:study_record_app/post/post.dart';
 
 class DatabaseHelper {
   static final _databaseName = "MyDatabase.db";
-  static final _databaseVersion = 14;
+  static final _databaseVersion = 15;
   static final table = 'my_table';
   static final columnId = 'id';
   static final columnTitle = 'title';
@@ -34,8 +36,17 @@ class DatabaseHelper {
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
         version: _databaseVersion,
-        onCreate: _onCreate);
+        onCreate: _onCreate,
+        onUpgrade: _onUpgrade);
   }
+
+  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    // バージョン14から15へのアップグレード時に実行される処理
+    if (oldVersion < 15) {
+      await db.execute('ALTER TABLE $table ADD COLUMN imagePaths TEXT');
+    }
+  }
+
 
   // データベースの作成
   Future _onCreate(Database db, int version) async {
@@ -46,15 +57,16 @@ class DatabaseHelper {
       $columnDescription TEXT NOT NULL,
       $columnUrl TEXT NOT NULL,
       $columnDate TEXT NOT NULL,
-      imagePath TEXT 
+      imagePaths TEXT
     )
   ''');
   }
 
   // データの挿入
-  Future<int> insert(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    return await db.insert('my_table', row);
+  Future<int> insert(BlogPost post) async {
+    Database db = await database;
+    Map<String, dynamic> row = post.toMap(); // BlogPostからマップを取得
+    return await db.insert(table, row);
   }
 
   // データの取得
@@ -76,19 +88,24 @@ class DatabaseHelper {
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
 
-  // DatabaseHelperクラス内に追加
   Future<List<BlogPost>> getAllPosts() async {
     Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query(table);
 
     return List.generate(maps.length, (i) {
+      // JSON 文字列をデコードしてリストに変換、nullまたは空文字列の場合は空のリストを使用
+      List<String> imagePaths = [];
+      if (maps[i]['imagePaths'] != null && maps[i]['imagePaths'].isNotEmpty) {
+        imagePaths = List<String>.from(jsonDecode(maps[i]['imagePaths']));
+      }
+
       return BlogPost(
-        id: maps[i]['id'],
-        title: maps[i]['title'],
-        description: maps[i]['description'],
-        url: maps[i]['url'],
-        imagePath: maps[i]['imagePath'],
-        creationDate: DateTime.parse(maps[i]['creationDate']),
+        id: maps[i]['id'] as int?,
+        title: maps[i]['title'] as String,
+        description: maps[i]['description'] as String,
+        url: maps[i]['url'] as String,
+        imagePaths: imagePaths,
+        creationDate: DateTime.parse(maps[i]['creationDate'] as String),
       );
     });
   }

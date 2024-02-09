@@ -81,19 +81,19 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Memo Dtails'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: _deletePost,
-            ),
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: _editPost,
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        title: Text('Memo Dtails'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: _deletePost,
+          ),
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: _editPost,
+          ),
+        ],
+      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -117,13 +117,45 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
             SizedBox(height: 16),
             Text(currentPost.description),
             SizedBox(height: 16),
-            if (currentPost.imagePath.isNotEmpty)
-              Image.file(File(currentPost.imagePath)),
+            if (currentPost.imagePaths.isNotEmpty)
+              SizedBox(
+                height: 200,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: currentPost.imagePaths.length,
+                  itemBuilder: (context, index) {
+                    final path = currentPost.imagePaths[index];
+                    return GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Dialog( // 画像を表示するダイアログ　背景色を透明に設定
+                              backgroundColor: Colors.transparent,
+                              child: Container(
+                                width: double.infinity,
+                                height: double.infinity,
+                                child: GestureDetector(
+                                  onTap: () => Navigator.pop(context),
+                                  child: Image.file(File(path), fit: BoxFit.contain),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Image.file(File(path)),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
           ],
         ),
       ),
     );
   }
 }
-
-

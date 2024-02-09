@@ -9,7 +9,6 @@ import '../data/database_helper.dart';
 class PostCreate extends StatefulWidget {
   final int currentTabIndex;
   final Function(BlogPost) onPostSubmit;
-
   const PostCreate({Key? key, required this.currentTabIndex, required this.onPostSubmit}) : super(key: key);
 
   @override
@@ -65,26 +64,20 @@ class _PostCreateState extends State<PostCreate> {
   String _description = '';
 
   void _submitPost() async {
-
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      List<String> imagePaths = _images.map((xFile) => xFile.path).toList();
 
-      String imagePath = '';
-      if (_images.isNotEmpty) {
-        // 選択された最初の画像をローカルに保存し、そのパスを取得
-        imagePath = await DatabaseHelper.instance.saveImageLocally(_images.first);
-      }
 
       final newPost = BlogPost(
         title: _title,
         url: _url,
         description: _description,
-        imagePath: imagePath,
+        imagePaths: imagePaths,
         creationDate: DateTime.now(),
       );
       // データベースヘルパーを使用してデータを保存
-      DatabaseHelper helper = DatabaseHelper.instance;
-      int id = await helper.insert(newPost.toMap()); // toMap()はBlogPostをMapに変換
+      int id = await DatabaseHelper.instance.insert(newPost);// toMap()はBlogPostをMapに変換
       newPost.id = id;
       print('挿入された行のID: $id');
 
@@ -117,33 +110,33 @@ class _PostCreateState extends State<PostCreate> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: 'Title',
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          border: InputBorder.none,
-                          labelStyle: TextStyle(
-                            fontSize: 16,)
-                          ),
-                      onSaved: (value) => _title = value!,
-                      validator: (value) {
-                        if(value == null || value.isEmpty) {
-                          return 'タイトルは必須入力です';
+                        decoration: InputDecoration(
+                            labelText: 'Title',
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            border: InputBorder.none,
+                            labelStyle: TextStyle(
+                              fontSize: 16,)
+                        ),
+                        onSaved: (value) => _title = value!,
+                        validator: (value) {
+                          if(value == null || value.isEmpty) {
+                            return 'タイトルは必須入力です';
+                          }
+                          return null;
                         }
-                        return null;
-                      }
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                        decoration: const InputDecoration(
-                            labelText: 'URL',
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                            labelStyle: TextStyle(
+                      decoration: const InputDecoration(
+                        labelText: 'URL',
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        labelStyle: TextStyle(
                             fontSize: 16),
-                            border: InputBorder.none,
-                        ),
-                        onSaved: (value) => _url = value!,
+                        border: InputBorder.none,
+                      ),
+                      onSaved: (value) => _url = value!,
                     ),
                   ),
                   Padding(
@@ -152,12 +145,12 @@ class _PostCreateState extends State<PostCreate> {
                       maxLines: 10,
                       keyboardType: TextInputType.multiline,
                       decoration: const InputDecoration(
-                          labelText: 'Description',
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          alignLabelWithHint: true,
-                          labelStyle: TextStyle(
-                              fontSize: 16),
-                          border: InputBorder.none,
+                        labelText: 'Description',
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        alignLabelWithHint: true,
+                        labelStyle: TextStyle(
+                            fontSize: 16),
+                        border: InputBorder.none,
                       ),
                       onSaved: (value) => _description = value!,
                     ),
@@ -178,14 +171,27 @@ class _PostCreateState extends State<PostCreate> {
                     ),
                   ),
                   SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        // 写真表示
-                        Wrap(
-                          children: _images.map((file) => Image.file(File(file.path), width: 100, height: 100)).toList(),
-                        ),
-                        // 投稿フォーム...
-                      ],
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: _images.map((file) {
+                        return Stack(
+                          alignment: Alignment.center, // Stack内の子ウィジェットを中央に配置
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 5), // 画像間のマージン
+                              child: Image.file(File(file.path), width: 120, height: 120),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.close, color: Colors.white, size: 30), // 赤色のキャンセルアイコン、サイズ調整可
+                              onPressed: () {
+                                setState(() {
+                                  _images.removeWhere((XFile img) => img.path == file.path); // この画像をリストから削除
+                                });
+                              },
+                            ),
+                          ],
+                        );
+                      }).toList(),
                     ),
                   ),
                 ],
@@ -197,4 +203,3 @@ class _PostCreateState extends State<PostCreate> {
     );
   }
 }
-

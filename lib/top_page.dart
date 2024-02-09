@@ -43,24 +43,24 @@ class _TopPageState extends ConsumerState<TopPage> with TickerProviderStateMixin
     return Scaffold(
       appBar: AppBar(
         title: const Text('Record Keyword App'),
-          actions: <Widget>[
-            // AppBarのアクションに章を追加するボタンを設定
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () => ref.read(tabsProvider.notifier).addTab(context), // ここでcontextを渡す
-            ),
+        actions: <Widget>[
+          // AppBarのアクションに章を追加するボタンを設定
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => ref.read(tabsProvider.notifier).addTab(context), // ここでcontextを渡す
+          ),
 
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () async {
-                // DatabaseHelperを使用して全投稿を取得
-                final List<BlogPost> posts = await DatabaseHelper.instance.getAllPosts();
-                showSearch(
-                  context: context,
-                  delegate: PostSearchDelegate(posts),
-                );
-              },
-            ),
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () async {
+              // DatabaseHelperを使用して全投稿を取得
+              final List<BlogPost> posts = await DatabaseHelper.instance.getAllPosts();
+              showSearch(
+                context: context,
+                delegate: PostSearchDelegate(posts),
+              );
+            },
+          ),
         ],
         bottom: TabBar(
           controller: _tabController,

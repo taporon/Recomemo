@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:study_record_app/post/post.dart';
 
 import '../data/database_helper.dart';
@@ -17,6 +20,8 @@ class _EditPostPageState extends State<EditPostPage> {
   late String _title;
   late String _url;
   late String _description;
+  List<String> _imagePaths = []; // 画像パスのリスト
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -25,8 +30,52 @@ class _EditPostPageState extends State<EditPostPage> {
     _title = widget.post.title;
     _url = widget.post.url;
     _description = widget.post.description;
+    _imagePaths = List.from(widget.post.imagePaths);
     print('Received post id: ${widget.post.id}');
   }
+
+  Future<void> _pickImage() async {
+    final List<XFile>? images = await _picker.pickMultiImage();
+    if (images != null) {
+      setState(() {
+        _imagePaths.addAll(images.map((xFile) => xFile.path));
+      });
+    }
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    if (image != null) {
+      setState(() {
+        _imagePaths.add(image.path);
+      });
+    }
+  }
+
+  void _removeImage(String path) {
+    setState(() {
+      _imagePaths.remove(path);
+    });
+  }
+
+  Widget _buildImagePickerWidget() {
+    return Row(
+          children: _imagePaths.map((path) {
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    child: Image.file(File(path), width: 120, height: 120)),
+                IconButton(
+                  icon: Icon(Icons.close, color: Colors.white, size: 30),
+                  onPressed: () => _removeImage(path),
+                ),
+              ],
+            );
+          }).toList(),
+    );
+  } // 画像選択ウィジェット
 
   void _submitEdit() async {
     if (_formKey.currentState!.validate()) {
@@ -35,7 +84,7 @@ class _EditPostPageState extends State<EditPostPage> {
         id: widget.post.id, // 既存のポストIDを保持
         title: _title,
         url: _url,
-        imagePath: widget.post.imagePath, // 既存の画像パスを保持
+        imagePaths: _imagePaths,
         description: _description,
         creationDate: widget.post.creationDate, // 既存の作成日を保持
       );
@@ -56,7 +105,7 @@ class _EditPostPageState extends State<EditPostPage> {
         );
       }
     }
-  }
+  } // 編集処理
 
   @override
   Widget build(BuildContext context) {
@@ -118,13 +167,32 @@ class _EditPostPageState extends State<EditPostPage> {
                   maxLines: 10,
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
-                      labelText: 'Description',
+                    labelText: 'Description',
                     floatingLabelBehavior: FloatingLabelBehavior.never,
                     labelStyle: TextStyle(
                         fontSize: 16),
                     border: InputBorder.none,),
                   onSaved: (value) => _description = value ?? '',
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.camera_alt),
+                      onPressed: _pickImageFromCamera, // 写真選択
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.photo_library),
+                      onPressed: _pickImage, // 写真選択
+                    ),
+                  ],
+                ),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: _buildImagePickerWidget(),
               ),
             ],
           ),
