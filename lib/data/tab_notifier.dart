@@ -27,9 +27,9 @@ class TabsNotifier extends StateNotifier<TabsState> {
   TabsNotifier()
       : super(TabsState(
     tabs: [
-      const Tab(text: '第1章'),
-      const Tab(text: '第2章'),
-      const Tab(text: '第3章'),
+      const Tab(text: 'Chapter1'),
+      const Tab(text: 'Chapter2'),
+      const Tab(text: 'Chapter3'),
     ],
     tabViews: [])) {
     _initializeTabViews();
@@ -135,13 +135,13 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (postsLists.length >= 15) {
       // 15章以上の場合はSnackBarを表示して追加を拒否
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('章は最大15までです。これ以上は追加できません。')),
+        SnackBar(content: Text('Chapterは最大15までです。これ以上は追加できません。')),
       );
     } else {
       // 新しい章（タブ）を追加
       postsLists.add([]); // 新しい章の投稿リストを追加
       var newTabs = List<Tab>.from(state.tabs)
-        ..add(Tab(text: '第${postsLists.length}章'));
+        ..add(Tab(text: 'Chapter${postsLists.length}'));
       var newTabViews = List<Widget>.from(state.tabViews)
         ..add(_buildListView(postsLists.length - 1));
       state = TabsState(tabs: newTabs, tabViews: newTabViews);

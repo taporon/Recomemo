@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:study_record_app/post/post.dart';
 import 'package:study_record_app/post/post_create.dart';
 import 'package:study_record_app/data/tab_notifier.dart';
@@ -16,12 +17,21 @@ class TopPage extends ConsumerStatefulWidget {
 
 class _TopPageState extends ConsumerState<TopPage> with TickerProviderStateMixin {
   late TabController _tabController;
+  final GlobalKey _one = GlobalKey();
+  final GlobalKey _two = GlobalKey();
+  final GlobalKey _three = GlobalKey();
+
 
   @override
   void initState() {
     super.initState();
     final tabsCount = ref.read(tabsProvider).tabs.length;
     _tabController = TabController(length: tabsCount, vsync: this);
+    // ウィジェットのビルドが完了した後にチュートリアルを開始する
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // チュートリアルを開始するメソッドを呼び出す
+      ShowCaseWidget.of(context).startShowCase([_one, _two, _three]);
+    });
   }
 
   @override
@@ -45,21 +55,31 @@ class _TopPageState extends ConsumerState<TopPage> with TickerProviderStateMixin
         title: const Text('Record Keyword App'),
         actions: <Widget>[
           // AppBarのアクションに章を追加するボタンを設定
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => ref.read(tabsProvider.notifier).addTab(context), // ここでcontextを渡す
+          Showcase(
+            key: _two,
+            title: 'タブの追加',titleTextStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+            description: 'Chapterを追加できます（最大15章まで）',
+            child: IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () => ref.read(tabsProvider.notifier).addTab(context), // ここでcontextを渡す
+            ),
           ),
 
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () async {
-              // DatabaseHelperを使用して全投稿を取得
-              final List<BlogPost> posts = await DatabaseHelper.instance.getAllPosts();
-              showSearch(
-                context: context,
-                delegate: PostSearchDelegate(posts),
-              );
-            },
+          Showcase(
+            key: _three,
+            title: '検索',titleTextStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+            description: '投稿を検索できます',
+            child: IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () async {
+                // DatabaseHelperを使用して全投稿を取得
+                final List<BlogPost> posts = await DatabaseHelper.instance.getAllPosts();
+                showSearch(
+                  context: context,
+                  delegate: PostSearchDelegate(posts),
+                );
+              },
+            ),
           ),
         ],
         bottom: TabBar(
@@ -72,9 +92,15 @@ class _TopPageState extends ConsumerState<TopPage> with TickerProviderStateMixin
         controller: _tabController,
         children: tabsState.tabViews,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _addNewPost(context),
-        child: const Icon(Icons.edit_note),
+      floatingActionButton:
+      Showcase(
+        key: _one,
+        title: '新規投稿',titleTextStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+        description: '新しい投稿を追加できます',
+        child: FloatingActionButton(
+          onPressed: () => _addNewPost(context),
+          child: const Icon(Icons.edit_note),
+        ),
       ),
     );
   }
@@ -92,7 +118,4 @@ class _TopPageState extends ConsumerState<TopPage> with TickerProviderStateMixin
       ),
     );
   }
-
-
-
 }

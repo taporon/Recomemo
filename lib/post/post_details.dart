@@ -12,7 +12,10 @@ class PostDetails extends ConsumerStatefulWidget {
   final BlogPost post;
   final int tabIndex;
 
-  const PostDetails({Key? key, required this.post, required this.tabIndex}) : super(key: key);
+  const PostDetails({Key? key,
+    required this.post,
+    required this.tabIndex}) :
+        super(key: key);
 
   @override
   _PostDetailsState createState() => _PostDetailsState();
