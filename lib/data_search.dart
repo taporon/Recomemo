@@ -1,6 +1,7 @@
+import 'package:RecoMemo/post/post.dart';
+import 'package:RecoMemo/post/post_details.dart';
 import 'package:flutter/material.dart';
-import 'package:study_record_app/post/post.dart';
-import 'package:study_record_app/post/post_details.dart';
+
 
 import 'main.dart';
 

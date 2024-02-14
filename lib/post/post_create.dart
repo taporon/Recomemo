@@ -1,9 +1,9 @@
 
 import 'dart:io';
 
+import 'package:RecoMemo/post/post.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:study_record_app/post/post.dart';
 import '../data/database_helper.dart';
 
 class PostCreate extends StatefulWidget {

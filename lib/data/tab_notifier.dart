@@ -1,8 +1,8 @@
+import 'package:RecoMemo/post/post.dart';
+import 'package:RecoMemo/post/post_details.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:study_record_app/post/post.dart';
-import 'package:study_record_app/post/post_details.dart';
 
 class TabsState {
   final List<Widget> tabs;

@@ -1,11 +1,11 @@
+import 'package:RecoMemo/post/post.dart';
+import 'package:RecoMemo/post/post_create.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:study_record_app/post/post.dart';
-import 'package:study_record_app/post/post_create.dart';
-import 'package:study_record_app/data/tab_notifier.dart';
 
 import 'data/database_helper.dart';
+import 'data/tab_notifier.dart';
 import 'data_search.dart';
 
 class TopPage extends ConsumerStatefulWidget {
@@ -52,7 +52,7 @@ class _TopPageState extends ConsumerState<TopPage> with TickerProviderStateMixin
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Record Keyword App'),
+        title: const Text('RecoMemo'),
         actions: <Widget>[
           // AppBarのアクションに章を追加するボタンを設定
           Showcase(

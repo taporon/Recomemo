@@ -1,12 +1,12 @@
 import 'dart:io';
 
+import 'package:RecoMemo/post/post.dart';
+import 'package:RecoMemo/post/post_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:study_record_app/data/tab_notifier.dart';
-import 'package:study_record_app/post/post.dart';
-import 'package:study_record_app/post/post_edit.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../data/database_helper.dart';
+import '../data/tab_notifier.dart';
 
 class PostDetails extends ConsumerStatefulWidget {
   final BlogPost post;
