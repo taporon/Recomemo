@@ -9,7 +9,7 @@ import '../data/database_helper.dart';
 class EditPostPage extends StatefulWidget {
   final BlogPost post;
 
-  EditPostPage({Key? key, required this.post}) : super(key: key);
+  const EditPostPage({Key? key, required this.post}) : super(key: key);
 
   @override
   _EditPostPageState createState() => _EditPostPageState();
@@ -35,13 +35,11 @@ class _EditPostPageState extends State<EditPostPage> {
   }
 
   Future<void> _pickImage() async {
-    final List<XFile>? images = await _picker.pickMultiImage();
-    if (images != null) {
-      setState(() {
-        _imagePaths.addAll(images.map((xFile) => xFile.path));
-      });
+    final List<XFile> images = await _picker.pickMultiImage();
+    setState(() {
+      _imagePaths.addAll(images.map((xFile) => xFile.path));
+    });
     }
-  }
 
   Future<void> _pickImageFromCamera() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
@@ -65,10 +63,10 @@ class _EditPostPageState extends State<EditPostPage> {
               alignment: Alignment.center,
               children: [
                 Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
                     child: Image.file(File(path), width: 120, height: 120)),
                 IconButton(
-                  icon: Icon(Icons.close, color: Colors.white, size: 30),
+                  icon: const Icon(Icons.close, color: Colors.white, size: 30),
                   onPressed: () => _removeImage(path),
                 ),
               ],
@@ -99,7 +97,7 @@ class _EditPostPageState extends State<EditPostPage> {
       } else {
         // 失敗した場合
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('更新に失敗しました'),
           ),
         );
@@ -114,88 +112,101 @@ class _EditPostPageState extends State<EditPostPage> {
         title: const Text('Edit Memo'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             onPressed: _submitEdit, // 編集処理を実行
           ),
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  initialValue: _title,
-                  decoration: InputDecoration(
-                      labelText: 'Title',
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      border: InputBorder.none,
-                      labelStyle: TextStyle(
-                        fontSize: 16,
-                      )
-                  ),
-                  onSaved: (value) => _title = value ?? '',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'タイトルは必須入力です';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  initialValue: _url,
-                  decoration: InputDecoration(
-                    labelText: 'URL',
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    labelStyle: TextStyle(
-                        fontSize: 16),
-                    border: InputBorder.none,
-                  ),
-                  onSaved: (value) => _url = value ?? '',
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  initialValue: _description,
-                  maxLines: 10,
-                  keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(
-                    labelText: 'Description',
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    labelStyle: TextStyle(
-                        fontSize: 16),
-                    border: InputBorder.none,),
-                  onSaved: (value) => _description = value ?? '',
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.camera_alt),
-                      onPressed: _pickImageFromCamera, // 写真選択
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        initialValue: _title,
+                        decoration: const InputDecoration(
+                            labelText: 'Title',
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            border: InputBorder.none,
+                            labelStyle: TextStyle(
+                              fontSize: 16,
+                            )
+                        ),
+                        onSaved: (value) => _title = value ?? '',
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'タイトルは必須入力です';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.photo_library),
-                      onPressed: _pickImage, // 写真選択
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        initialValue: _url,
+                        decoration: const InputDecoration(
+                          labelText: 'URL',
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          labelStyle: TextStyle(
+                              fontSize: 16),
+                          border: InputBorder.none,
+                        ),
+                        validator: (value) {
+                          // 入力がある場合のみURLの形式を検証
+                          if (value != null && value.isNotEmpty && !Uri.parse(value).isAbsolute) {
+                            return '有効なURLを入力してください';
+                          }
+                          return null; // 入力がない、または問題がない場合はnullを返してバリデーションを通過
+                        },
+                        onSaved: (value) => _url = value ?? '',
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        initialValue: _description,
+                        maxLines: 10,
+                        keyboardType: TextInputType.multiline,
+                        decoration: const InputDecoration(
+                          labelText: 'Description',
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          labelStyle: TextStyle(
+                              fontSize: 16),
+                          border: InputBorder.none,),
+                        onSaved: (value) => _description = value ?? '',
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.camera_alt),
+                            onPressed: _pickImageFromCamera, // 写真選択
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.photo_library),
+                            onPressed: _pickImage, // 写真選択
+                          ),
+                        ],
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: _buildImagePickerWidget(),
                     ),
                   ],
                 ),
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: _buildImagePickerWidget(),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

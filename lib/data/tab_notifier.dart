@@ -91,7 +91,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
                   children: <Widget>[
                     Text(
                      post.title,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
                       post.description,
@@ -103,7 +103,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
               ),
               Text(
                 formattedDate,
-                style: TextStyle(color: Colors.grey, fontSize: 12
+                style: const TextStyle(color: Colors.grey, fontSize: 12
                 ),
               ),
             ],
@@ -135,7 +135,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (postsLists.length >= 15) {
       // 15章以上の場合はSnackBarを表示して追加を拒否
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Chapterは最大15までです。これ以上は追加できません。')),
+        const SnackBar(content: Text('Chapterは最大15までです。これ以上は追加できません。')),
       );
     } else {
       // 新しい章（タブ）を追加

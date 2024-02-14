@@ -57,20 +57,20 @@ class _TopPageState extends ConsumerState<TopPage> with TickerProviderStateMixin
           // AppBarのアクションに章を追加するボタンを設定
           Showcase(
             key: _two,
-            title: 'タブの追加',titleTextStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
-            description: 'Chapterを追加できます（最大15章まで）',
+            title: 'タブの追加',titleTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+            description: 'Chapterを追加できます（最大Chapter15まで）',
             child: IconButton(
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               onPressed: () => ref.read(tabsProvider.notifier).addTab(context), // ここでcontextを渡す
             ),
           ),
 
           Showcase(
             key: _three,
-            title: '検索',titleTextStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+            title: '検索',titleTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
             description: '投稿を検索できます',
             child: IconButton(
-              icon: Icon(Icons.search),
+              icon: const Icon(Icons.search),
               onPressed: () async {
                 // DatabaseHelperを使用して全投稿を取得
                 final List<BlogPost> posts = await DatabaseHelper.instance.getAllPosts();
@@ -95,7 +95,7 @@ class _TopPageState extends ConsumerState<TopPage> with TickerProviderStateMixin
       floatingActionButton:
       Showcase(
         key: _one,
-        title: '新規投稿',titleTextStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+        title: '新規投稿',titleTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
         description: '新しい投稿を追加できます',
         child: FloatingActionButton(
           onPressed: () => _addNewPost(context),

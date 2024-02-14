@@ -7,16 +7,20 @@ void main() => runApp(
   ProviderScope(
     child: ShowCaseWidget(
       builder: Builder(
-          builder : (context)=> MyApp(),
+          builder : (context)=> const MyApp(),
       ),
     ),
   ),
 );
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Record Keyword App',
+      debugShowCheckedModeBanner: false,
       // ダークテーマをアプリケーションのメインテーマとして設定
       theme: ThemeData(
         useMaterial3: true,

@@ -9,14 +9,14 @@ import 'dart:io';
 import 'package:study_record_app/post/post.dart';
 
 class DatabaseHelper {
-  static final _databaseName = "MyDatabase.db";
-  static final _databaseVersion = 15;
-  static final table = 'my_table';
-  static final columnId = 'id';
-  static final columnTitle = 'title';
-  static final columnDescription = 'description';
-  static final columnUrl = 'url';
-  static final columnDate = 'creationDate';
+  static const _databaseName = "MyDatabase.db";
+  static const _databaseVersion = 15;
+  static const table = 'my_table';
+  static const columnId = 'id';
+  static const columnTitle = 'title';
+  static const columnDescription = 'description';
+  static const columnUrl = 'url';
+  static const columnDate = 'creationDate';
 
   // データベースヘルパーをシングルトンにする
   DatabaseHelper._privateConstructor();

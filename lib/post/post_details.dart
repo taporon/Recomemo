@@ -49,13 +49,13 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
   Widget build(BuildContext context) {
     final post = widget.post; // widget.post を直接使用
 
-    void _deletePost() async {
+    void deletePost() async {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('削除確認'),
-            content: const Text('この投稿を削除してもよろしいですか？'),
+            title: const Text('削除確認', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            content: const Text('この投稿を削除してもよろしいですか？', style: TextStyle(fontSize: 16)),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.pop(context, 'キャンセル'),
@@ -85,11 +85,11 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Memo Dtails'),
+        title: const Text('Memo Dtails'),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete),
-            onPressed: _deletePost,
+            onPressed: deletePost,
           ),
           IconButton(
             icon: const Icon(Icons.edit),
@@ -98,12 +98,12 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(currentPost.title, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            SizedBox(height: 16),
+            const SizedBox(height: 8),
             GestureDetector(
               onTap: () async {
                 final url = Uri.parse(currentPost.url);
@@ -115,11 +115,11 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
                   );
                 }
               },
-              child: Text(currentPost.url, style: const TextStyle(color: Colors.blue)),
+              child: Text(currentPost.url, style: const TextStyle(color: Colors.blue, fontSize: 16)),
             ),
-            SizedBox(height: 16),
-            Text(currentPost.description),
-            SizedBox(height: 16),
+            const SizedBox(height: 8),
+            Text(currentPost.description, style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 16),
             if (currentPost.imagePaths.isNotEmpty)
               SizedBox(
                 height: 200,
@@ -135,7 +135,7 @@ class _PostDetailsState extends ConsumerState<PostDetails> {
                           builder: (BuildContext context) {
                             return Dialog( // 画像を表示するダイアログ　背景色を透明に設定
                               backgroundColor: Colors.transparent,
-                              child: Container(
+                              child: SizedBox(
                                 width: double.infinity,
                                 height: double.infinity,
                                 child: GestureDetector(

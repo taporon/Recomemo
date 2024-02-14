@@ -15,13 +15,13 @@ class PostSearchDelegate extends SearchDelegate<BlogPost?> {
     return theme.copyWith(
       appBarTheme: AppBarTheme(
         backgroundColor: lightColorScheme.primary, // AppBarの背景色を設定
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      inputDecorationTheme: InputDecorationTheme(
+      inputDecorationTheme: const InputDecorationTheme(
         hintStyle: TextStyle(color: Colors.white), // ヒントテキストの色をホワイトに設定
       ),
-      textTheme: TextTheme(
-        titleLarge: TextStyle(
+      textTheme: theme.textTheme.copyWith(
+        titleLarge: const TextStyle(
           color: Colors.white,
           fontSize: 18.0, // 検索テキストのサイズを設定
         ),
@@ -33,7 +33,7 @@ class PostSearchDelegate extends SearchDelegate<BlogPost?> {
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
-        icon: Icon(Icons.clear),
+        icon: const Icon(Icons.clear),
         onPressed: () {
           query = '';
         },
@@ -44,7 +44,7 @@ class PostSearchDelegate extends SearchDelegate<BlogPost?> {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back),
       onPressed: () {
         close(context, null);
       },
@@ -85,7 +85,7 @@ class PostSearchDelegate extends SearchDelegate<BlogPost?> {
       itemBuilder: (context, index) {
         final post = suggestions[index];
         return ListTile(
-          title: Text(post.title),
+          title: Text(post.title, style: const TextStyle(fontWeight: FontWeight.bold)),
           subtitle: Text(post.description),
           onTap: () {
             Navigator.of(context).push(
